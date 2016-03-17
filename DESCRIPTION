@@ -1,0 +1,20 @@
+Package: zigam
+Type: Package
+Title: EM implementation of zero-inflated GAMs
+Description: EM implementation of zero-inflated GAMs
+Version: 0.1.0
+Date: 2016-03-18
+Author: Simon Wotherspoon and Paul Burch
+Maintainer: Paul Burch <Paul.Burch@aad.gov.au>
+Depends:
+    R (>= 3.0.1),
+    stats
+Suggests:
+    knitr,
+    rmarkdown
+Imports:
+    mgcv
+VignetteBuilder: knitr
+License: GPL (>=2)
+LazyData: TRUE
+RoxygenNote: 5.0.1

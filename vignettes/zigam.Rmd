@@ -1,0 +1,132 @@
+---
+title: "Zero-inflated Poisson Generalized Additive Model fitted using the EM Algorithm"
+author: "S. Wotherspoon and P. Burch"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{zigam}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: zigam.bib
+---
+
+# Introduction
+
+The **mgcv** package (@Wood2006gams) implements zero-inflated Poisson Generalised Additive Models (GAMs) with smoothing parameter estimation by either restricted maximum likelihood (REML) or maximum likelihood (ML). However, it does not permit for the inclusion of an offset term in the model.
+
+The **zigam** package implements zero-inflated GAMs using the EM Algorithm (@Pawitan2001likelihood) which permits the inclusion of an offset. The predictions should be reliable, but standard errors (and possibly the level of smoothing chosen) will be unreaslistic. Confidence intervals are therefore estimated using a parametric bootstrap (@Efron1993introduction).
+
+# Example - Simulated Data
+
+Note this example does use a model that includes an offset.
+
+Set a seed for repeatability
+
+```{r}
+set.seed(12032016)
+```
+
+Simulate some data to test
+
+```{r}
+n <- 5000
+x1 <- runif(n)
+x2 <- runif(n)
+ilogit <- function(x) 1/(1+exp(-x))
+p <- ilogit(sin(2*pi*x1)*sin(2*pi*x2))
+lambda <- exp(10*x1*(1-x1))
+z <- rbinom(n,1,p)
+y <- rpois(n,lambda*z)
+d <- data.frame(x1=x1,x2=x2,y=y)
+```
+
+Load the **mgcv** and **zigam** packages.
+
+```{r}
+library(mgcv)
+library(zigam)
+```
+
+Fit a zero-inflated Poisson model.
+
+```{r}
+fit <- zipgam(y ~ s(x1,x2),
+              ~ s(x1,x2),
+              data=d)
+```
+
+Show the inflation model (actually the model for this being a Poisson count)
+
+```{r, fig.height=9, fig.width=9}
+plot(fit$fit.pi,select=1,scheme=2)
+```
+
+and the model for the mean of the Poisson counts (with the additional zeroes removed)
+
+```{r, fig.height=9, fig.width=9}
+plot(fit$fit.lambda,select=1,scheme=2)
+```
+
+## Parametric Bootstrap
+
+A difficulty with the EM algorithm is that the estimated standard
+errors from the two stages of the fit tend to be underestimated,
+because each fails to recognize the variability in the other.
+
+One approach to estimating variability is the parametric bootstrap -
+we fit the model to the data, simulate new data from the model and
+then refit the model to the new data.
+
+Simulate a small data set (for speed)
+
+```{r}
+n <- 200
+x1 <- runif(n)
+x2 <- runif(n)
+ilogit <- function(x) 1/(1+exp(-x))
+p <- ilogit(1+sin(2*pi*x2))
+lambda <- exp(10*x1*(1-x1))
+z <- rbinom(n,1,p)
+y <- rpois(n,lambda*z)
+d <- data.frame(x1=x1,x2=x2,y=y)
+```
+
+Fit a simple model
+
+```{r}
+fit <- zipgam(y ~ s(x1),
+              ~ s(x2),
+              data=d)
+```
+
+
+If the data we wish to predict for is
+
+```{r}
+x1.pred <- seq(0,1,length.out=40)
+d.pred <- data.frame(x1=x1.pred,x2=rep(0,40))
+```
+
+Then the parametric bootstrap for the predicted responses is
+
+```{r}
+d.boot <- d
+boot <- sapply(simulate(fit,20),function(s) {
+  ## Update response
+  d.boot[,"y"] <- s;
+  ## Refit model and generate predictions
+  fit.boot <- update(fit,data=d.boot)
+  predict(fit.boot,d.pred,type="response")
+})
+```
+
+Extract the quantiles and plot
+
+```{r, fig.height=9, fig.width=9}
+pr.ci <- t(apply(boot,1,quantile,prob=c(0.025,0.5,0.975)))
+matplot(x1.pred,pr.ci,type="l",lty=1,
+        col=c("dodgerblue1","dodgerblue3","dodgerblue1"))
+```
+
+# References
+
