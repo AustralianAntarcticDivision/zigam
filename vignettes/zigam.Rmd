@@ -1,7 +1,7 @@
 ---
 title: "Zero-inflated Poisson Generalized Additive Model fitted using the EM Algorithm"
 author: "S. Wotherspoon and P. Burch"
-date: "`r Sys.Date()`"
+date: "21 March 2016"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{zigam}
@@ -98,7 +98,6 @@ fit <- zipgam(y ~ s(x1),
               ~ s(x2),
               data=d)
 ```
-
 
 If the data we wish to predict for is
 
