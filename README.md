@@ -10,3 +10,11 @@ A vignette (worked example) that can be accessed using the code below
 browseVignettes("zigam")
 ```
 
+### Installation
+
+Install via devtools:
+
+```R
+library(devtools)
+install_github("AustralianAntarcticDataCentre/zigam",build_vignettes=TRUE)
+```
