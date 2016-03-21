@@ -1,4 +1,8 @@
-CHANGES in  VERSION 0.0.1
+CHANGES in  VERSION 0.1.1
+
+o now passes R CMD check
+
+CHANGES in  VERSION 0.1.0
 
 o conversion of scripts written by Simon Wotherspoon
 to new R package

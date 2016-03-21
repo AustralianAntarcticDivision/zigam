@@ -11,7 +11,7 @@
 
 <meta name="author" content="S. Wotherspoon and P. Burch" />
 
-<meta name="date" content="2016-03-18" />
+<meta name="date" content="2016-03-21" />
 
 <title>Zero-inflated Poisson Generalized Additive Model fitted using the EM Algorithm</title>
 
@@ -52,7 +52,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 <h1 class="title">Zero-inflated Poisson Generalized Additive Model fitted using the EM Algorithm</h1>
 <h4 class="author"><em>S. Wotherspoon and P. Burch</em></h4>
-<h4 class="date"><em>2016-03-18</em></h4>
+<h4 class="date"><em>21 March 2016</em></h4>
 
 </div>
 
@@ -80,7 +80,7 @@ d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="
 <p>Load the <strong>mgcv</strong> and <strong>zigam</strong> packages.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mgcv)</code></pre>
 <pre><code>## Loading required package: nlme</code></pre>
-<pre><code>## This is mgcv 1.8-11. For overview type 'help(&quot;mgcv-package&quot;)'.</code></pre>
+<pre><code>## This is mgcv 1.8-12. For overview type 'help(&quot;mgcv-package&quot;)'.</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(zigam)</code></pre>
 <p>Fit a zero-inflated Poisson model.</p>
 <pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">zipgam</span>(y ~<span class="st"> </span><span class="kw">s</span>(x1,x2),

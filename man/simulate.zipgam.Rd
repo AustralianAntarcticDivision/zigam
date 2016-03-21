@@ -12,7 +12,7 @@
 \item{nsim}{number of response vectors to simulate. Defaults to 1.}
 
 \item{seed}{an object specifying if and how the random number
-generator should be initialized (‘seeded’).}
+generator should be initialized ('seeded').}
 
 \item{...}{additional optional arguments.}
 }

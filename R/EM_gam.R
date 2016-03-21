@@ -44,8 +44,8 @@ zipgam <- function(lambda.formula,pi.formula,data,
     ## Evaluate weights for current iteration
     w <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
     ## Update models for current iteration
-    fit.pi <- suppressWarnings(mgcv::gam(pi.formula,family=binomial(),gamma=gamma.pi,data=data))
-    fit.lambda <- suppressWarnings(mgcv::gam(lambda.formula,weights=w,family=poisson(),gamma=gamma.lambda,data=data))
+    fit.pi <- suppressWarnings(gam(pi.formula,family=binomial(),gamma=gamma.pi,data=data))
+    fit.lambda <- suppressWarnings(gam(lambda.formula,weights=w,family=poisson(),gamma=gamma.lambda,data=data))
     pi <- predict(fit.pi,type="response")
     lambda <- predict(fit.lambda,type="response")
     ## Evaluate likelihood
@@ -154,8 +154,8 @@ zinbgam <- function(mu.formula,pi.formula,data,
     ## Evaluate weights for current iteration
     w <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)
     ## Update models for current iteration
-    fit.pi <- suppressWarnings(mgcv::gam(pi.formula,family=binomial(),gamma=gamma.pi,data=data))
-    fit.mu <- suppressWarnings(mgcv::gam(mu.formula,weights=w,family=nb(),gamma=gamma.mu,data=data))
+    fit.pi <- suppressWarnings(gam(pi.formula,family=binomial(),gamma=gamma.pi,data=data))
+    fit.mu <- suppressWarnings(gam(mu.formula,weights=w,family=nb(),gamma=gamma.mu,data=data))
     pi <- predict(fit.pi,type="response")
     mu <- predict(fit.mu,type="response")
     theta <- fit.mu$family$getTheta(TRUE)
@@ -195,6 +195,7 @@ zinbgam <- function(mu.formula,pi.formula,data,
 # @param seed an object specifying if and how the random number
 # generator should be initialized (‘seeded’).
 # @param ... additional optional arguments.
+# @importFrom stats simulate.lm
 # @export
 # simulate.zinbgam <- function(object,nsim=1,seed=NULL,...) {
 #   suppressWarnings(simulate(object$fit.mu,nsim=nsim,seed=seed,...)*
