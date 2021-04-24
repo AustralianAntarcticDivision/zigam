@@ -4,8 +4,18 @@
 \alias{zipgam}
 \title{Zero-inflated Poisson GAM}
 \usage{
-zipgam(lambda.formula, pi.formula, data, lambda = NULL, pi = NULL,
-  gamma.pi = 1, gamma.lambda = 1, min.em = 5, max.em = 50, tol = 0.01)
+zipgam(
+  lambda.formula,
+  pi.formula,
+  data,
+  lambda = NULL,
+  pi = NULL,
+  gamma.pi = 1,
+  gamma.lambda = 1,
+  min.em = 5,
+  max.em = 50,
+  tol = 0.01
+)
 }
 \arguments{
 \item{lambda.formula}{formula for the count model}
@@ -15,9 +25,9 @@ zipgam(lambda.formula, pi.formula, data, lambda = NULL, pi = NULL,
 \item{data}{a data frame or list containing the model
 response variable and covariates required by the formula.}
 
-\item{lambda}{starting lambda value (default=NULL)}
+\item{lambda}{initial lambda vector}
 
-\item{pi}{starting pi value (default=NULL)}
+\item{pi}{initial pi vector}
 
 \item{gamma.pi}{binary model gamma}
 
@@ -33,4 +43,3 @@ response variable and covariates required by the formula.}
 Fit a zero-inflated Poisson Generalized Additive Model
 using the EM Algorithm
 }
-

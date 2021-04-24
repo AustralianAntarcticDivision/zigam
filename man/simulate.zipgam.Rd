@@ -19,4 +19,3 @@ generator should be initialized ('seeded').}
 \description{
 Simulate response from a model of class zipgam.
 }
-

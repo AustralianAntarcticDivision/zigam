@@ -18,4 +18,3 @@
 \description{
 Obtain predictions from a fitted model of class zipgam.
 }
-

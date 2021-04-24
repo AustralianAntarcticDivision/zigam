@@ -4,8 +4,19 @@
 \alias{zinbgam}
 \title{Zero-inflated Negative Binomial GAM}
 \usage{
-zinbgam(mu.formula, pi.formula, data, mu = NULL, pi = NULL, gamma.pi = 1,
-  gamma.mu = 1, min.em = 5, max.em = 50, tol = 0.01)
+zinbgam(
+  mu.formula,
+  pi.formula,
+  data,
+  mu = NULL,
+  pi = NULL,
+  theta = 1,
+  gamma.pi = 1,
+  gamma.mu = 1,
+  min.em = 5,
+  max.em = 50,
+  tol = 0.01
+)
 }
 \arguments{
 \item{mu.formula}{formula for the count model}
@@ -15,9 +26,11 @@ zinbgam(mu.formula, pi.formula, data, mu = NULL, pi = NULL, gamma.pi = 1,
 \item{data}{a data frame or list containing the model
 response variable and covariates required by the formula.}
 
-\item{mu}{starting mu value (default=NULL)}
+\item{mu}{initial mu vector}
 
-\item{pi}{starting pi value (default=NULL)}
+\item{pi}{intial pi vector}
+
+\item{theta}{initial theta value}
 
 \item{gamma.pi}{binary model gamma}
 
@@ -33,4 +46,3 @@ response variable and covariates required by the formula.}
 Fit a zero-inflated Negative Binomial Generalized Additive
 Model using the EM Algorithm
 }
-

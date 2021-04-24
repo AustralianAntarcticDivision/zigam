@@ -3,7 +3,6 @@
 \docType{package}
 \name{zigam}
 \alias{zigam}
-\alias{zigam-package}
 \title{zigam: Zero-inflated Generalised Additive Models}
 \description{
 zigam implements Zero-inflated Generalised Addditive Models (GAMs)
@@ -16,4 +15,3 @@ bootstrap.
 To learn more about zigam, start with the vignette:
 \code{browseVignettes(package = "zigam")}
 }
-
