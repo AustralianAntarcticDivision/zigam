@@ -1,5 +1,7 @@
 ## version 0.1 respresents source file EM_gam_source_8-March-2016.R
 
+
+
 #' Zero-inflated Poisson GAM
 #'
 #' Fit a zero-inflated Poisson Generalized Additive Model
@@ -8,8 +10,8 @@
 #' @param pi.formula formula for the binary model
 #' @param data a data frame or list containing the model
 #'  response variable and covariates required by the formula.
-#' @param lambda starting lambda value (default=NULL)
-#' @param pi starting pi value (default=NULL)
+#' @param lambda initial lambda vector
+#' @param pi initial pi vector
 #' @param gamma.pi binary model gamma
 #' @param gamma.lambda count model gamma
 #' @param min.em minimum number of EM iterations
@@ -17,9 +19,9 @@
 #' @param tol tolerance (default=1.0E-2)
 #' @export
 zipgam <- function(lambda.formula,pi.formula,data,
-                   lambda=NULL,pi=NULL,
-                   gamma.pi=1,gamma.lambda=1,
-                   min.em=5,max.em=50,tol=1.0E-2) {
+                    lambda=NULL,pi=NULL,
+                    gamma.pi=1,gamma.lambda=1,
+                    min.em=5,max.em=50,tol=1.0E-2) {
   ## Log density
   dzip.log <- function(x, lambda, pi) {
     logp <- log(pi) + dpois(x, lambda, log=TRUE)
@@ -40,13 +42,18 @@ zipgam <- function(lambda.formula,pi.formula,data,
   environment(pi.formula) <- environment()
   environment(lambda.formula) <- environment()
   logL <- double(max.em)
+  ## Evaluate initial weights
+  w <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
+  ## Setup models for fitting
+  G.pi <- suppressWarnings(gam(pi.formula,family=binomial(),gamma=gamma.pi,fit=FALSE,data=data))
+  G.lambda <- suppressWarnings(gam(lambda.formula,weights=w,family=poisson(),gamma=gamma.lambda,fit=FALSE,data=data))
   for(k in 1:max.em) {
-    ## Evaluate weights for current iteration
-    w <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
     ## Update models for current iteration
-    fit.pi <- suppressWarnings(gam(pi.formula,family=binomial(),gamma=gamma.pi,data=data))
-    fit.lambda <- suppressWarnings(gam(lambda.formula,weights=w,family=poisson(),gamma=gamma.lambda,data=data))
+    G.pi$y <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
+    fit.pi <- suppressWarnings(gam(G=G.pi))
     pi <- predict(fit.pi,type="response")
+    G.lambda$w <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
+    fit.lambda <- suppressWarnings(gam(G=G.lambda))
     lambda <- predict(fit.lambda,type="response")
     ## Evaluate likelihood
     logL[k] <- sum(dzip.log(y,lambda,pi))
@@ -56,8 +63,6 @@ zipgam <- function(lambda.formula,pi.formula,data,
       break
     }
   }
-  ## print the final log likelihood
-  print(logL)
   ## Calculate degrees of freedom and aic
   df <- attr(logLik(fit.pi),"df")+attr(logLik(fit.lambda),"df")
   aic <- 2*(df-logL[length(logL)])
@@ -66,7 +71,7 @@ zipgam <- function(lambda.formula,pi.formula,data,
               fit.pi=fit.pi,
               lambda=lambda,
               pi=pi,
-              w=w,
+              w=ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1),
               aic=aic,
               logL=logL,
               call=cl)
@@ -117,8 +122,9 @@ predict.zipgam <- function(object,newdata,type=c("response","link"),...) {
 #' @param pi.formula formula for the binary model
 #' @param data a data frame or list containing the model
 #'  response variable and covariates required by the formula.
-#' @param mu starting mu value (default=NULL)
-#' @param pi starting pi value (default=NULL)
+#' @param mu initial mu vector
+#' @param pi intial pi vector
+#' @param theta initial theta value
 #' @param gamma.mu count model gamma
 #' @param gamma.pi binary model gamma
 #' @param min.em minimum number of EM iterations
@@ -126,9 +132,9 @@ predict.zipgam <- function(object,newdata,type=c("response","link"),...) {
 #' @param tol tolerance (default=1.0E-2)
 #' @export
 zinbgam <- function(mu.formula,pi.formula,data,
-                    mu=NULL,pi=NULL,
-                    gamma.pi=1,gamma.mu=1,
-                    min.em=5,max.em=50,tol=1.0E-2) {
+                     mu=NULL,pi=NULL,theta=1,
+                     gamma.pi=1,gamma.mu=1,
+                     min.em=5,max.em=50,tol=1.0E-2) {
   ## Log density
   dzinb.log <- function(x,mu,pi,shape) {
     logp <- log(pi)+dnbinom(x,size=shape,mu=mu,log=T)
@@ -149,14 +155,18 @@ zinbgam <- function(mu.formula,pi.formula,data,
   environment(pi.formula) <- environment()
   environment(mu.formula) <- environment()
   logL <- double(max.em)
-  theta <- 1
+  ## Evaluate initial weights
+  w <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)
+  ## Setup models for fitting
+  G.pi <- suppressWarnings(gam(pi.formula,family=binomial(),gamma=gamma.pi,fit=FALSE,data=data))
+  G.mu <- suppressWarnings(gam(mu.formula,weights=w,family=nb(),gamma=gamma.mu,fit=FALSE,data=data))
   for(k in 1:max.em) {
-    ## Evaluate weights for current iteration
-    w <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)
     ## Update models for current iteration
-    fit.pi <- suppressWarnings(gam(pi.formula,family=binomial(),gamma=gamma.pi,data=data))
-    fit.mu <- suppressWarnings(gam(mu.formula,weights=w,family=nb(),gamma=gamma.mu,data=data))
+    G.pi$y <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)
+    fit.pi <- suppressWarnings(gam(G=G.pi))
     pi <- predict(fit.pi,type="response")
+    G.mu$w <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)
+    fit.mu <- suppressWarnings(gam(G=G.mu))
     mu <- predict(fit.mu,type="response")
     theta <- fit.mu$family$getTheta(TRUE)
     ## Evaluate likelihood
@@ -166,9 +176,6 @@ zinbgam <- function(mu.formula,pi.formula,data,
       break
     }
   }
-  ## print the final log likelihood and theta
-  print(logL)
-  print(theta)
   ## Calculate degrees of freedom and aic
   df <- attr(logLik(fit.pi),"df")+attr(logLik(fit.mu),"df")
   aic <- 2*(df-logL[length(logL)])
@@ -177,7 +184,7 @@ zinbgam <- function(mu.formula,pi.formula,data,
               fit.pi=fit.pi,
               mu=mu,
               pi=pi,
-              w=w,
+              w=ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1),
               aic=aic,
               logL=logL,
               theta=theta,
@@ -185,6 +192,7 @@ zinbgam <- function(mu.formula,pi.formula,data,
   class(fit) <- "zinbgam"
   fit
 }
+
 
 ## no simulate method for negative binomial family
 # Simulate response from the fitted model
