@@ -14,14 +14,16 @@
 #' @param pi initial pi vector
 #' @param gamma.pi binary model gamma
 #' @param gamma.lambda count model gamma
+#' @param select include model selection penalty
+#' @param method method for selecting smoothing parameters
 #' @param min.em minimum number of EM iterations
 #' @param max.em maximum number of EM iterations
 #' @param tol tolerance (default=1.0E-2)
 #' @export
 zipgam <- function(lambda.formula,pi.formula,data,
                     lambda=NULL,pi=NULL,
-                    gamma.pi=1,gamma.lambda=1,
-                    min.em=5,max.em=50,tol=1.0E-2) {
+                    gamma.pi=1,gamma.lambda=1,select=FALSE,
+                    method="GCV.Cp",min.em=5,max.em=50,tol=1.0E-2) {
   ## Log density
   dzip.log <- function(x, lambda, pi) {
     logp <- log(pi) + dpois(x, lambda, log=TRUE)
@@ -45,8 +47,10 @@ zipgam <- function(lambda.formula,pi.formula,data,
   ## Evaluate initial weights
   w <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
   ## Setup models for fitting
-  G.pi <- suppressWarnings(gam(pi.formula,family=binomial(),gamma=gamma.pi,fit=FALSE,data=data))
-  G.lambda <- suppressWarnings(gam(lambda.formula,weights=w,family=poisson(),gamma=gamma.lambda,fit=FALSE,data=data))
+  G.pi <- suppressWarnings(gam(pi.formula,family=binomial(),
+                               select=select,gamma=gamma.pi,method=method,fit=FALSE,data=data))
+  G.lambda <- suppressWarnings(gam(lambda.formula,weights=w,family=poisson(),
+                                   select=select,gamma=gamma.lambda,method=method,fit=FALSE,data=data))
   for(k in 1:max.em) {
     ## Update models for current iteration
     G.pi$y <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
@@ -127,14 +131,16 @@ predict.zipgam <- function(object,newdata,type=c("response","link"),...) {
 #' @param theta initial theta value
 #' @param gamma.mu count model gamma
 #' @param gamma.pi binary model gamma
+#' @param select include model selection penalty
+#' @param method method for selecting smoothing parameters
 #' @param min.em minimum number of EM iterations
 #' @param max.em maximum number of EM iterations
 #' @param tol tolerance (default=1.0E-2)
 #' @export
 zinbgam <- function(mu.formula,pi.formula,data,
                      mu=NULL,pi=NULL,theta=1,
-                     gamma.pi=1,gamma.mu=1,
-                     min.em=5,max.em=50,tol=1.0E-2) {
+                     gamma.pi=1,gamma.mu=1,select=FALSE,
+                     method="GCV.Cp",min.em=5,max.em=50,tol=1.0E-2) {
   ## Log density
   dzinb.log <- function(x,mu,pi,shape) {
     logp <- log(pi)+dnbinom(x,size=shape,mu=mu,log=T)
@@ -158,8 +164,10 @@ zinbgam <- function(mu.formula,pi.formula,data,
   ## Evaluate initial weights
   w <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)
   ## Setup models for fitting
-  G.pi <- suppressWarnings(gam(pi.formula,family=binomial(),gamma=gamma.pi,fit=FALSE,data=data))
-  G.mu <- suppressWarnings(gam(mu.formula,weights=w,family=nb(),gamma=gamma.mu,fit=FALSE,data=data))
+  G.pi <- suppressWarnings(gam(pi.formula,family=binomial(),
+                               select=select,gamma=gamma.pi,method=method,fit=FALSE,data=data))
+  G.mu <- suppressWarnings(gam(mu.formula,weights=w,family=nb(),
+                               select=select,gamma=gamma.mu,method=method,fit=FALSE,data=data))
   for(k in 1:max.em) {
     ## Update models for current iteration
     G.pi$y <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)

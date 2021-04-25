@@ -13,6 +13,8 @@ zinbgam(
   theta = 1,
   gamma.pi = 1,
   gamma.mu = 1,
+  select = FALSE,
+  method = "GCV.Cp",
   min.em = 5,
   max.em = 50,
   tol = 0.01
@@ -35,6 +37,10 @@ response variable and covariates required by the formula.}
 \item{gamma.pi}{binary model gamma}
 
 \item{gamma.mu}{count model gamma}
+
+\item{select}{include model selection penalty}
+
+\item{method}{method for selecting smoothing parameters}
 
 \item{min.em}{minimum number of EM iterations}
 
