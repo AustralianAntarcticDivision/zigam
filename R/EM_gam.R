@@ -48,16 +48,16 @@ zipgam <- function(lambda.formula,pi.formula,data,
   w <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
   ## Setup models for fitting
   G.pi <- suppressWarnings(gam(pi.formula,family=binomial(),
-                               select=select,gamma=gamma.pi,method=method,fit=FALSE,data=data))
+                               select=select,fit=FALSE,data=data))
   G.lambda <- suppressWarnings(gam(lambda.formula,weights=w,family=poisson(),
-                                   select=select,gamma=gamma.lambda,method=method,fit=FALSE,data=data))
+                                   select=select,fit=FALSE,data=data))
   for(k in 1:max.em) {
     ## Update models for current iteration
     G.pi$y <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
-    fit.pi <- suppressWarnings(gam(G=G.pi))
+    fit.pi <- suppressWarnings(gam(G=G.pi,gamma=gamma.pi,method=method))
     pi <- predict(fit.pi,type="response")
     G.lambda$w <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
-    fit.lambda <- suppressWarnings(gam(G=G.lambda))
+    fit.lambda <- suppressWarnings(gam(G=G.lambda,gamma=gamma.lambda,method=method))
     lambda <- predict(fit.lambda,type="response")
     ## Evaluate likelihood
     logL[k] <- sum(dzip.log(y,lambda,pi))
@@ -165,16 +165,16 @@ zinbgam <- function(mu.formula,pi.formula,data,
   w <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)
   ## Setup models for fitting
   G.pi <- suppressWarnings(gam(pi.formula,family=binomial(),
-                               select=select,gamma=gamma.pi,method=method,fit=FALSE,data=data))
+                               select=select,fit=FALSE,data=data))
   G.mu <- suppressWarnings(gam(mu.formula,weights=w,family=nb(),
-                               select=select,gamma=gamma.mu,method=method,fit=FALSE,data=data))
+                               select=select,fit=FALSE,data=data))
   for(k in 1:max.em) {
     ## Update models for current iteration
     G.pi$y <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)
-    fit.pi <- suppressWarnings(gam(G=G.pi))
+    fit.pi <- suppressWarnings(gam(G=G.pi,gamma=gamma.pi,method=method))
     pi <- predict(fit.pi,type="response")
     G.mu$w <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)
-    fit.mu <- suppressWarnings(gam(G=G.mu))
+    fit.mu <- suppressWarnings(gam(G=G.mu,gamma=gamma.mu,method=method))
     mu <- predict(fit.mu,type="response")
     theta <- fit.mu$family$getTheta(TRUE)
     ## Evaluate likelihood
