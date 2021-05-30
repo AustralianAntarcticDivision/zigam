@@ -1,7 +1,3 @@
-## version 0.1 respresents source file EM_gam_source_8-March-2016.R
-
-
-
 #' Zero-inflated Poisson GAM
 #'
 #' Fit a zero-inflated Poisson Generalized Additive Model
@@ -10,6 +6,7 @@
 #' @param pi.formula formula for the binary model
 #' @param data a data frame or list containing the model
 #'  response variable and covariates required by the formula.
+#' @param knots an optional list of knot values to be used for basis construction.
 #' @param lambda initial lambda vector
 #' @param pi initial pi vector
 #' @param gamma.pi binary model gamma
@@ -21,7 +18,7 @@
 #' @param tol tolerance (default=1.0E-2)
 #' @export
 zipgam <- function(lambda.formula,pi.formula,data,
-                    lambda=NULL,pi=NULL,
+                    knots=NULL,lambda=NULL,pi=NULL,
                     gamma.pi=1,gamma.lambda=1,select=FALSE,
                     method="GCV.Cp",min.em=5,max.em=50,tol=1.0E-2) {
   ## Log density
@@ -48,9 +45,9 @@ zipgam <- function(lambda.formula,pi.formula,data,
   w <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
   ## Setup models for fitting
   G.pi <- suppressWarnings(gam(pi.formula,family=binomial(),
-                               select=select,fit=FALSE,data=data))
+                               select=select,fit=FALSE,data=data,knots=knots))
   G.lambda <- suppressWarnings(gam(lambda.formula,weights=w,family=poisson(),
-                                   select=select,fit=FALSE,data=data))
+                                   select=select,fit=FALSE,data=data,knots=knots))
   for(k in 1:max.em) {
     ## Update models for current iteration
     G.pi$y <- ifelse(y==0,pi*dpois(0,lambda)/(1-pi+pi*dpois(0,lambda)),1)
@@ -126,11 +123,12 @@ predict.zipgam <- function(object,newdata,type=c("response","link"),...) {
 #' @param pi.formula formula for the binary model
 #' @param data a data frame or list containing the model
 #'  response variable and covariates required by the formula.
+#' @param knots an optional list of knot values to be used for basis construction.
 #' @param mu initial mu vector
 #' @param pi intial pi vector
 #' @param theta initial theta value
-#' @param gamma.mu count model gamma
 #' @param gamma.pi binary model gamma
+#' @param gamma.mu count model gamma
 #' @param select include model selection penalty
 #' @param method method for selecting smoothing parameters
 #' @param min.em minimum number of EM iterations
@@ -138,9 +136,9 @@ predict.zipgam <- function(object,newdata,type=c("response","link"),...) {
 #' @param tol tolerance (default=1.0E-2)
 #' @export
 zinbgam <- function(mu.formula,pi.formula,data,
-                     mu=NULL,pi=NULL,theta=1,
-                     gamma.pi=1,gamma.mu=1,select=FALSE,
-                     method="GCV.Cp",min.em=5,max.em=50,tol=1.0E-2) {
+                    knots=NULL,mu=NULL,pi=NULL,theta=1,
+                    gamma.pi=1,gamma.mu=1,select=FALSE,
+                    method="GCV.Cp",min.em=5,max.em=50,tol=1.0E-2) {
   ## Log density
   dzinb.log <- function(x,mu,pi,shape) {
     logp <- log(pi)+dnbinom(x,size=shape,mu=mu,log=T)
@@ -165,9 +163,9 @@ zinbgam <- function(mu.formula,pi.formula,data,
   w <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)
   ## Setup models for fitting
   G.pi <- suppressWarnings(gam(pi.formula,family=binomial(),
-                               select=select,fit=FALSE,data=data))
+                               select=select,fit=FALSE,data=data,knots=knots))
   G.mu <- suppressWarnings(gam(mu.formula,weights=w,family=nb(),
-                               select=select,fit=FALSE,data=data))
+                               select=select,fit=FALSE,data=data,knots=knots))
   for(k in 1:max.em) {
     ## Update models for current iteration
     G.pi$y <- ifelse(y==0,pi*dnbinom(0,size=theta,mu=mu)/(1-pi+pi*dnbinom(0,size=theta,mu=mu)),1)

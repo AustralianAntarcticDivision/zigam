@@ -8,6 +8,7 @@ zipgam(
   lambda.formula,
   pi.formula,
   data,
+  knots = NULL,
   lambda = NULL,
   pi = NULL,
   gamma.pi = 1,
@@ -26,6 +27,8 @@ zipgam(
 
 \item{data}{a data frame or list containing the model
 response variable and covariates required by the formula.}
+
+\item{knots}{an optional list of knot values to be used for basis construction.}
 
 \item{lambda}{initial lambda vector}
 

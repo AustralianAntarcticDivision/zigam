@@ -8,6 +8,7 @@ zinbgam(
   mu.formula,
   pi.formula,
   data,
+  knots = NULL,
   mu = NULL,
   pi = NULL,
   theta = 1,
@@ -27,6 +28,8 @@ zinbgam(
 
 \item{data}{a data frame or list containing the model
 response variable and covariates required by the formula.}
+
+\item{knots}{an optional list of knot values to be used for basis construction.}
 
 \item{mu}{initial mu vector}
 
