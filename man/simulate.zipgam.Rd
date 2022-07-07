@@ -7,7 +7,8 @@
 \method{simulate}{zipgam}(object, nsim = 1, seed = NULL, ...)
 }
 \arguments{
-\item{object}{an object representing a fitted model of class zipgam.}
+\item{object}{an object representing a fitted model of class
+zipgam.}
 
 \item{nsim}{number of response vectors to simulate. Defaults to 1.}
 

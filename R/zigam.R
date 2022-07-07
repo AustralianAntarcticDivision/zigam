@@ -11,8 +11,6 @@
 #'
 #' @docType package
 #' @name zigam
-#' @import mgcv
-#' @import stats
 NULL
 
 

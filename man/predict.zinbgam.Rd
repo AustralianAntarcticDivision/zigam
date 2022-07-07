@@ -7,7 +7,8 @@
 \method{predict}{zinbgam}(object, newdata, type = c("response", "link"), ...)
 }
 \arguments{
-\item{object}{an object representing a fitted model of class zinbgam.}
+\item{object}{an object representing a fitted model of class
+zinbgam.}
 
 \item{newdata}{data to predict from.}
 

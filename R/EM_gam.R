@@ -1,12 +1,13 @@
 #' Zero-inflated Poisson GAM
 #'
-#' Fit a zero-inflated Poisson Generalized Additive Model
-#' using the EM Algorithm
+#' Fit a zero-inflated Poisson Generalized Additive Model using the EM
+#' Algorithm
 #' @param lambda.formula formula for the count model
 #' @param pi.formula formula for the binary model
-#' @param data a data frame or list containing the model
-#'  response variable and covariates required by the formula.
-#' @param knots an optional list of knot values to be used for basis construction.
+#' @param data a data frame or list containing the model response
+#'   variable and covariates required by the formula.
+#' @param knots an optional list of knot values to be used for basis
+#'   construction.
 #' @param lambda initial lambda vector
 #' @param pi initial pi vector
 #' @param gamma.pi binary model gamma
@@ -16,6 +17,9 @@
 #' @param min.em minimum number of EM iterations
 #' @param max.em maximum number of EM iterations
 #' @param tol tolerance (default=1.0E-2)
+#' @importFrom stats model.frame model.response update predict
+#' @importFrom stats dpois poisson binomial logLik
+#' @importFrom mgcv gam
 #' @export
 zipgam <- function(lambda.formula,pi.formula,data,
                     knots=NULL,lambda=NULL,pi=NULL,
@@ -83,11 +87,13 @@ zipgam <- function(lambda.formula,pi.formula,data,
 #' Simulate response from the fitted model
 #'
 #' Simulate response from a model of class zipgam.
-#' @param object an object representing a fitted model of class zipgam.
+#' @param object an object representing a fitted model of class
+#'   zipgam.
 #' @param nsim number of response vectors to simulate. Defaults to 1.
 #' @param seed an object specifying if and how the random number
-#' generator should be initialized ('seeded').
+#'   generator should be initialized ('seeded').
 #' @param ... additional optional arguments.
+#' @importFrom stats simulate
 #' @export
 simulate.zipgam <- function(object,nsim=1,seed=NULL,...) {
   suppressWarnings(simulate(object$fit.lambda,nsim=nsim,seed=seed,...)*
@@ -101,6 +107,7 @@ simulate.zipgam <- function(object,nsim=1,seed=NULL,...) {
 #' @param newdata data to predict from.
 #' @param type the type of prediction required.
 #' @param ... additional optional arguments.
+#' @importFrom stats predict
 #' @export
 predict.zipgam <- function(object,newdata,type=c("response","link"),...) {
   type <- match.arg(type)
@@ -117,13 +124,14 @@ predict.zipgam <- function(object,newdata,type=c("response","link"),...) {
 
 #' Zero-inflated Negative Binomial GAM
 #'
-#' Fit a zero-inflated Negative Binomial Generalized Additive
-#' Model using the EM Algorithm
+#' Fit a zero-inflated Negative Binomial Generalized Additive Model
+#' using the EM Algorithm
 #' @param mu.formula formula for the count model
 #' @param pi.formula formula for the binary model
-#' @param data a data frame or list containing the model
-#'  response variable and covariates required by the formula.
-#' @param knots an optional list of knot values to be used for basis construction.
+#' @param data a data frame or list containing the model response
+#'   variable and covariates required by the formula.
+#' @param knots an optional list of knot values to be used for basis
+#'   construction.
 #' @param mu initial mu vector
 #' @param pi intial pi vector
 #' @param theta initial theta value
@@ -134,6 +142,9 @@ predict.zipgam <- function(object,newdata,type=c("response","link"),...) {
 #' @param min.em minimum number of EM iterations
 #' @param max.em maximum number of EM iterations
 #' @param tol tolerance (default=1.0E-2)
+#' @importFrom mgcv gam nb
+#' @importFrom stats model.frame model.response update predict
+#' @importFrom stats logLik dnbinom binomial
 #' @export
 zinbgam <- function(mu.formula,pi.formula,data,
                     knots=NULL,mu=NULL,pi=NULL,theta=1,
@@ -141,7 +152,7 @@ zinbgam <- function(mu.formula,pi.formula,data,
                     method="GCV.Cp",min.em=5,max.em=50,tol=1.0E-2) {
   ## Log density
   dzinb.log <- function(x,mu,pi,shape) {
-    logp <- log(pi)+dnbinom(x,size=shape,mu=mu,log=T)
+    logp <- log(pi)+dnbinom(x,size=shape,mu=mu,log=TRUE)
     logp[x==0] <- log(exp(logp[x==0])+(1-pi[x==0]))
     logp
   }
@@ -219,10 +230,12 @@ zinbgam <- function(mu.formula,pi.formula,data,
 #' Predict from the fitted model
 #'
 #' Obtain predictions from a fitted model of class zinbgam.
-#' @param object an object representing a fitted model of class zinbgam.
+#' @param object an object representing a fitted model of class
+#'   zinbgam.
 #' @param newdata data to predict from.
 #' @param type the type of prediction required.
 #' @param ... additional optional arguments.
+#' @importFrom stats predict
 #' @export
 predict.zinbgam <- function(object,newdata,type=c("response","link"),...) {
   type <- match.arg(type)

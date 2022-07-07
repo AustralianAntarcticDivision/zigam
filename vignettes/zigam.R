@@ -51,7 +51,7 @@ d.pred <- data.frame(x1=x1.pred,x2=rep(0,40))
 d.boot <- d
 boot <- sapply(simulate(fit,20),function(s) {
   ## Update response
-  d.boot[,"y"] <- s;
+  d.boot[,"y"] <- s
   ## Refit model and generate predictions
   fit.boot <- update(fit,data=d.boot)
   predict(fit.boot,d.pred,type="response")

@@ -25,10 +25,11 @@ zipgam(
 
 \item{pi.formula}{formula for the binary model}
 
-\item{data}{a data frame or list containing the model
-response variable and covariates required by the formula.}
+\item{data}{a data frame or list containing the model response
+variable and covariates required by the formula.}
 
-\item{knots}{an optional list of knot values to be used for basis construction.}
+\item{knots}{an optional list of knot values to be used for basis
+construction.}
 
 \item{lambda}{initial lambda vector}
 
@@ -49,6 +50,6 @@ response variable and covariates required by the formula.}
 \item{tol}{tolerance (default=1.0E-2)}
 }
 \description{
-Fit a zero-inflated Poisson Generalized Additive Model
-using the EM Algorithm
+Fit a zero-inflated Poisson Generalized Additive Model using the EM
+Algorithm
 }
