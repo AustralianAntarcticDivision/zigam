@@ -4,7 +4,12 @@
 \alias{predict.zipgam}
 \title{Predict from the fitted model}
 \usage{
-\method{predict}{zipgam}(object, newdata, type = c("response", "link"), ...)
+\method{predict}{zipgam}(
+  object,
+  newdata,
+  type = c("response", "pi.response", "lambda.response", "pi.link", "lambda.link"),
+  ...
+)
 }
 \arguments{
 \item{object}{an object representing a fitted model of class zipgam.}

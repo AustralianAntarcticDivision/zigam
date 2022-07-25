@@ -4,7 +4,12 @@
 \alias{predict.zinbgam}
 \title{Predict from the fitted model}
 \usage{
-\method{predict}{zinbgam}(object, newdata, type = c("response", "link"), ...)
+\method{predict}{zinbgam}(
+  object,
+  newdata,
+  type = c("response", "pi.response", "mu.response", "pi.link", "mu.link"),
+  ...
+)
 }
 \arguments{
 \item{object}{an object representing a fitted model of class

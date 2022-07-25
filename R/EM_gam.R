@@ -109,7 +109,10 @@ simulate.zipgam <- function(object,nsim=1,seed=NULL,...) {
 #' @param ... additional optional arguments.
 #' @importFrom stats predict
 #' @export
-predict.zipgam <- function(object,newdata,type=c("response","link"),...) {
+predict.zipgam <- function(object,newdata,
+                           type=c("response","pi.response","lambda.response",
+                                  "pi.link","lambda.link"),...) {
+
   type <- match.arg(type)
   switch(type,
          response={
@@ -237,7 +240,9 @@ zinbgam <- function(mu.formula,pi.formula,data,
 #' @param ... additional optional arguments.
 #' @importFrom stats predict
 #' @export
-predict.zinbgam <- function(object,newdata,type=c("response","link"),...) {
+predict.zinbgam <- function(object,newdata,
+                            type=c("response","pi.response","mu.response",
+                                   "pi.link","mu.link"),...) {
   type <- match.arg(type)
   switch(type,
          response={
