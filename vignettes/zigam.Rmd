@@ -1,10 +1,9 @@
 ---
 title: "Zero-inflated Poisson Generalized Additive Model fitted using the EM Algorithm"
 author: "S. Wotherspoon and P. Burch"
-date: "21 March 2016"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{zigam}
+  %\VignetteIndexEntry{Zero-inflated Poisson Generalized Additive Model fitted using the EM Algorithm}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: zigam.bib

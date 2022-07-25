@@ -18,3 +18,4 @@ auto/
 *.synctex.gz
 *.dvi
 .Rproj.user
+inst/doc
