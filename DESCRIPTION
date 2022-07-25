@@ -3,8 +3,11 @@ Type: Package
 Title: EM implementation of zero-inflated GAMs
 Description: EM implementation of zero-inflated GAMs.
 Version: 0.1.2
-Author: Simon Wotherspoon and Paul Burch
-Maintainer: Paul Burch <Paul.Burch@aad.gov.au>
+Authors@R:
+    c(person("Simon", "Wotherspoon", email="Simon.Wotherspoon@aad.gov.au",
+             role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6947-4445")),
+      person("Paul", "Burch", email="Paul.Burch@csiro.au",
+             role = c("aut","cre")))
 Depends:
     R (>= 3.0.1)
 Suggests:
@@ -15,5 +18,5 @@ Imports:
     stats
 VignetteBuilder: knitr
 License: GPL (>=2)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Encoding: UTF-8
