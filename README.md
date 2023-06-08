@@ -1,20 +1,33 @@
-### Overview
 
-The **zigam** R package implements zero-inflated Poisson and Negative Binomial Generalized Additive Models from the **mgcv** package using the EM Algorithm.
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-### Examples
+# zigam
 
-A vignette (worked example) that can be accessed using the code below
+<!-- badges: start -->
 
-```S
-browseVignettes("zigam")
+[![R-CMD-check](https://github.com/AustralianAntarcticDivision/zigam/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AustralianAntarcticDivision/zigam/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+The **zigam** R package implements zero-inflated Poisson and Negative
+Binomial Generalized Additive Models from the **mgcv** package using the
+EM Algorithm.
+
+## Installation
+
+You can install the development version of zigam from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes") ## if not already installed
+remotes::install_github("AustralianAntarcticDivision/zigam")
 ```
 
-### Installation
+## Example
 
-Install via devtools:
+A vignette (worked example) is available as part of the [package
+documentation](https://australianantarcticdivision.github.io/zigam) or
+can be view (after installation) using the code below:
 
-```R
-library(devtools)
-install_github("AustralianAntarcticDataCentre/zigam",build_vignettes=TRUE)
+``` r
+browseVignettes("zigam")
 ```

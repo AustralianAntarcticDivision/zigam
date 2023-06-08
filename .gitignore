@@ -19,3 +19,4 @@ auto/
 *.dvi
 .Rproj.user
 inst/doc
+README.html
