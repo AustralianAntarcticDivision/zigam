@@ -3,7 +3,6 @@
 #################
 
 *.Rproj
-.Rbuildignore
 .Rhistory
 *~
 auto/

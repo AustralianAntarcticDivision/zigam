@@ -1,0 +1,4 @@
+^\.github$
+^README\.Rmd$
+^README\.html$
+^docs$
